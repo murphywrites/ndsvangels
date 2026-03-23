@@ -32,6 +32,53 @@
             height: 100%;
             background: var(--white);
             box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #member-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: var(--spacing-md) 0;
+        }
+
+        #member-form input {
+            padding: 12px 16px;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            font-size: 1.1rem;
+            width: 100%;
+            font-family: var(--font-main);
+            transition: all 0.3s ease;
+        }
+
+        #member-form input:focus {
+            outline: none;
+            border-color: var(--nd-gold);
+            box-shadow: 0 0 0 3px rgba(201, 151, 0, 0.1);
+        }
+
+        #member-form button {
+            padding: 12px;
+            background-color: var(--nd-navy);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #member-form button:hover {
+            background-color: var(--nd-metallic-gold);
+            transform: translateY(-2px);
         }
 
         .price {
@@ -103,7 +150,9 @@
                 <p style="margin-bottom: 1.5rem;">We want to encourage the interaction of Notre Dame alumni dedicated to
                     partnering with entrepreneurs
                     who are changing the world in an open and collaborative way-- it's not easy to start a company and,
-                    as a group, we want to help. If you want to help mentor an entrepreneur, please first join the group, then fill out the mentor application below. If you're an entrepreneur and need help, just reach out via LinkedIn messaging to other
+                    as a group, we want to help. If you want to help mentor an entrepreneur, please first join the
+                    group, then fill out the mentor application below. If you're an entrepreneur and need help, just
+                    reach out via LinkedIn messaging to other
                     members-- you will be amazed how helpful we all are as a community - GO IRISH!</p>
 
                 <p>Membership benefits include regular invites to our pitch events, the ability to apply to pitch
@@ -115,35 +164,77 @@
             <div
                 style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; max-width: 900px; margin: 0 auto;">
                 <div class="membership-card">
-                    <h3>Angel Member</h3>
-                    <div class="price">Join for Free</div>
-                    <p style="margin-bottom: 1.5rem;">Join our group on LinkedIn</p>
-                    <ul class="benefits-list" style="margin-bottom: 2rem;">
-                        <li>Regular invites to pitch events</li>
-                        <li>Ability to apply to pitch yourself</li>
-                        <li>Networking with fellow alumni</li>
-                        <li>Access to collaborative entrepreneurial network</li>
-                    </ul>
+                    <div class="card-content">
+                        <h3>Angel Member</h3>
+                        <div class="price">Join for Free</div>
+                        <form id="member-form">
+                            <input type="text" id="name" placeholder="Full Name" required />
+                            <input type="email" id="email" placeholder="Email" required />
+                            <button type="submit">Submit</button>
+                        </form>
+
+                        <script>
+                            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyNI3WxMcp7TwjuHBiNN2PhAtUELSdhwAyTJS4DGYtly-uKqzHszhK-wIb2h9-O_cgilQ/exec';
+
+                            document.getElementById('member-form').addEventListener('submit', async function (e) {
+                                e.preventDefault();
+
+                                const payload = {
+                                    id: crypto.randomUUID(),
+                                    timestamp: new Date().toISOString(),
+                                    email: document.getElementById('email').value.trim(),
+                                    name: document.getElementById('name').value.trim()
+                                };
+
+                                try {
+                                    const response = await fetch(SCRIPT_URL, {
+                                        method: 'POST',
+                                        body: JSON.stringify(payload)
+                                        // No Content-Type header — prevents CORS preflight failure
+                                    });
+                                    const result = await response.json();
+                                    if (result.status === 'success') {
+                                        alert('Submitted successfully!');
+                                        document.getElementById('member-form').reset();
+                                    }
+                                } catch (err) {
+                                    alert('Submission failed: ' + err.message);
+                                }
+                            });
+                        </script>
+                        <ul class="benefits-list" style="margin-bottom: 2rem;">
+                            <li>Regular invites to pitch events</li>
+                            <li>Ability to apply to pitch yourself</li>
+                            <li>Networking with fellow alumni</li>
+                            <li>Access to collaborative entrepreneurial network</li>
+                        </ul>
+                    </div>
+
                     <a href="https://www.linkedin.com/groups/14813062/" target="_blank" class="btn btn-primary"
                         style="width: 100%;">Join on LinkedIn</a>
                 </div>
 
                 <div class="membership-card">
-                    <h3>Mentor</h3>
-                    <div class="price">Volunteer</div>
-                    <p style="margin-bottom: 1.5rem;">Help founders in the Notre Dame network</p>
-                    <ul class="benefits-list" style="margin-bottom: 2rem;">
-                        <li>Share your expertise with startups</li>
-                        <li>Guide Notre Dame alumni founders</li>
-                        <li>Expand your professional impact</li>
-                        <li>Support the next generation of Irish entrepreneurs</li>
-                    </ul>
+                    <div class="card-content">
+                        <h3>Mentor</h3>
+                        <div class="price">Volunteer</div>
+                        <p style="margin-bottom: 3rem;">Help founders in the Notre Dame network</p>
+                        <ul class="benefits-list" style="margin-bottom: 5rem;">
+                            <li>Share your expertise with startups</li>
+                            <li>Guide Notre Dame alumni founders</li>
+                            <li>Expand your professional impact</li>
+                            <li>Support the next generation of Irish entrepreneurs</li>
+                        </ul>
+                    </div>
                     <a href="https://docs.google.com/forms/d/e/1FAIpQLSfYR1TXGpKOaUXrbXYxy-DIxBFKzzkCI01C8HNavZQSj6AVvQ/viewform?usp=dialog"
                         target="_blank" class="btn btn-primary" style="width: 100%;">Become a Mentor</a>
                 </div>
             </div>
         </div>
     </section>
+
+
+
 
     <!-- Footer -->
     <footer class="footer">
